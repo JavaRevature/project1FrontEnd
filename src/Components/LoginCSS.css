@@ -1,0 +1,12 @@
+
+.login {
+    margin-top: 1em;
+    width: 100%;
+}
+
+.register{
+    display: flex;
+    margin-top: 1em;
+    gap: 5em;
+    justify-content: center;
+}
