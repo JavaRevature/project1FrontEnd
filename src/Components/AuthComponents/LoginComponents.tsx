@@ -1,13 +1,34 @@
 import { Container, Form, Button } from "react-bootstrap"
 import "./LoginCSS.css"
 import { useState } from "react";
+import { store } from "../../GlobalData/store";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export const LoginComponent: React.FC = () => {
 
     const [username, setUsername] = useState<String>('');
     const [password, setPassword] = useState<String>('');
 
-    const handleLogin = () => {
+    const navigate = useNavigate()
 
+    const handleLogin = async () => {
+        const loginResponse = await axios.post(store.baseUrl + "login", {
+            username: username,
+            password: password
+        }
+        ).then(
+            (response) => {
+                store.authToken = response.data.jwtToken
+                store.user.username = response.data.username
+                store.user.role = response.data.role
+                alert(`Login Successfully! Welcome ${store.user.role} ${store.user.username}`)
+                navigate("/dashboard")
+            }
+        ).catch((error) => {
+
+            alert(error)
+        }
+        )
     }
     return (
         <Container>
@@ -36,7 +57,7 @@ export const LoginComponent: React.FC = () => {
 
             <div className="register">
                 Don't have account?
-                <Button className="btn-success">Register</Button>
+                <Button className="btn-success" onClick={() => { navigate("/register") }}>Register</Button>
             </div>
         </Container>
     )
