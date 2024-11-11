@@ -1,13 +1,24 @@
 import "./CardsContainer.css"
-import { Table } from "react-bootstrap"
+import { Button, Table } from "react-bootstrap"
 import { useEffect, useState } from "react";
 import { User } from "../../Types/User";
 import axios from "axios";
 import { store } from "../../GlobalData/store";
-export const DashboardCardsContainer: React.FC = () => {
+import { Reimbursement } from "../../Types/Reimbursement";
+import { UpdateReimbursements } from "./UpdateReimbursements";
+export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPending }) => {
     const [user, setUser] = useState<User>();
-    const [reimbursements, setReimbursements] = useState<any>([]);
+    const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
+    const [currentReimbursement, setCurrentReimbursement] = useState<Reimbursement | null>();
     const token = localStorage.getItem('authToken');
+
+    const handleOpenModal = (reimbursement: Reimbursement) => {
+        setCurrentReimbursement(reimbursement)
+    }
+
+    const handleCloseModal = () => {
+        setCurrentReimbursement(null);
+    }
 
     useEffect(() => {
         if (localStorage.getItem('username') && localStorage.getItem('role')) {
@@ -23,36 +34,27 @@ export const DashboardCardsContainer: React.FC = () => {
 
     useEffect(() => {
         const getReimbursementsByUserRoleOrId = async () => {
-
+            let requestParameter = "reimbursements"
             if (user?.role === "MANAGER") {
-                await axios.get(store.baseUrl + "reimbursements/all", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                    .then((response) => {
-                        setReimbursements(response.data)
-                    }).catch((error) => {
-                        alert(error)
-                    })
+                requestParameter += "/all"
             }
-            else if (user?.role === "EMPLOYEE") {
-                await axios.get(store.baseUrl + "reimbursements", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                    .then((response) => {
-                        setReimbursements(response.data)
-                    }).catch((error) => {
-                        alert(error)
-                    })
+            if (isPending) {
+                requestParameter += "/pending"
             }
-
+            await axios.get(store.baseUrl + requestParameter, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then((response) => {
+                    setReimbursements(response.data)
+                }).catch((error) => {
+                    alert(error)
+                })
         }
         getReimbursementsByUserRoleOrId();
 
-    }, [user, token])
+    }, [isPending, token, user?.role])
 
 
     return (
@@ -64,18 +66,18 @@ export const DashboardCardsContainer: React.FC = () => {
                         <th>Status</th>
                         <th>Cost</th>
                         <th>Description</th>
-                        <th>Approved By</th>
+                        {user?.role === "EMPLOYEE" ? <th>Resolved By</th> : <th>Update Status</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {reimbursements && reimbursements.length > 0 ? (
-                        reimbursements.map((reimbursement: any) => (
+                        reimbursements.map((reimbursement: Reimbursement) => (
                             <tr key={reimbursement.id}>
                                 <td>{reimbursement.submittedBy.username}</td>
                                 <td>{reimbursement.status}</td>
                                 <td>{reimbursement.amount}</td>
                                 <td>{reimbursement.description}</td>
-                                <td>{reimbursement.approvedBy}</td>
+                                {user?.role === "EMPLOYEE" ? <td>{reimbursement.resolvedBy?.username}</td> : <td><Button onClick={() => handleOpenModal(reimbursement)}>Update</Button></td>}
                             </tr>
                         ))
                     ) : (
@@ -85,6 +87,7 @@ export const DashboardCardsContainer: React.FC = () => {
                     )}
                 </tbody>
             </Table>
+            {currentReimbursement && <UpdateReimbursements reimbursement={currentReimbursement} closeModal={handleCloseModal}></UpdateReimbursements>}
         </div>
     )
 }

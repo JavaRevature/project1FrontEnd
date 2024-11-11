@@ -9,7 +9,7 @@ export const NewReimbursements: React.FC = () => {
     const [description, setDescription] = useState<String>();
     const token = localStorage.getItem('authToken');
 
-    const handleLogin = async () => {
+    const handleSubmit = async () => {
         await axios.post(store.baseUrl + "reimbursements",
             {
                 amount: amount,
@@ -22,8 +22,11 @@ export const NewReimbursements: React.FC = () => {
 
             }).then(() => {
                 alert("Successful! Please wait for approval")
+                setShowForm(false)
+                window.location.reload();
             }).catch((error) => {
                 alert(error)
+                setShowForm(false)
             })
     }
 
@@ -50,7 +53,7 @@ export const NewReimbursements: React.FC = () => {
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={() => setShowForm(false)}>Close</Button>
-                    <Button variant="success" onClick={handleLogin}>Submit</Button>
+                    <Button variant="success" onClick={handleSubmit}>Submit</Button>
                 </ModalFooter>
             </Modal >
         </>
