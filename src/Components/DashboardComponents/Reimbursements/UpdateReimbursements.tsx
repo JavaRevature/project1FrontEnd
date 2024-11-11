@@ -1,7 +1,7 @@
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from "react-bootstrap"
-import { Reimbursement } from "../../Types/Reimbursement"
+import { Reimbursement } from "../../../Types/Reimbursement"
 import axios from "axios";
-import { store } from "../../GlobalData/store";
+import { store } from "../../../GlobalData/store";
 
 export const UpdateReimbursements: React.FC<{ reimbursement: Reimbursement, closeModal: () => void }> = ({ reimbursement, closeModal }) => {
     const token = localStorage.getItem('authToken');

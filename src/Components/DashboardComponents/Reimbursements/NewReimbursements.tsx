@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react"
 import { Button, Form, FormControl, FormGroup, FormLabel, Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap"
-import { store } from "../../GlobalData/store";
+import { store } from "../../../GlobalData/store";
 
 export const NewReimbursements: React.FC = () => {
     const [showForm, setShowForm] = useState(false);

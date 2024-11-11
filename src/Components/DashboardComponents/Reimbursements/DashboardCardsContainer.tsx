@@ -1,10 +1,10 @@
 import "./CardsContainer.css"
 import { Button, Table } from "react-bootstrap"
 import { useEffect, useState } from "react";
-import { User } from "../../Types/User";
+import { User } from "../../../Types/User";
 import axios from "axios";
-import { store } from "../../GlobalData/store";
-import { Reimbursement } from "../../Types/Reimbursement";
+import { store } from "../../../GlobalData/store";
+import { Reimbursement } from "../../../Types/Reimbursement";
 import { UpdateReimbursements } from "./UpdateReimbursements";
 export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPending }) => {
     const [user, setUser] = useState<User>();

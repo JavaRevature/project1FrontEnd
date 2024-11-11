@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import "./SideBarCSS.css"
-import { User } from "../../Types/User";
+import { User } from "../../../Types/User";
+import { useNavigate } from "react-router-dom";
 export const SideBar: React.FC = () => {
 
     const [user, setUser] = useState<User>();
-
+    const navigate = useNavigate()
     useEffect(() => {
         if (localStorage.getItem('username') && localStorage.getItem('role')) {
             setUser(
@@ -22,10 +23,10 @@ export const SideBar: React.FC = () => {
             <h3>ERS</h3>
             <hr />
             <div className="SideBarItems">
-                <h4>Reimbursements</h4>
+                <h4 onClick={() => { navigate("/dashboard") }}>Reimbursements</h4>
                 {
                     user?.role === "MANAGER" ?
-                        <h4>Manage Users</h4> :
+                        <h4 onClick={() => { navigate("/dashboard/users") }}>Manage Users</h4> :
                         <></>
                 }
             </div>

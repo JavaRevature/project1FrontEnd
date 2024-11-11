@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path='' element={<LoginComponent />}></Route>
         <Route path='/register' element={<RegisterComponent />}></Route>
-        <Route path='/dashboard' element={<Dashboard />}></Route>
+        <Route path='/dashboard/*' element={<Dashboard />}></Route>
       </Routes>
     </BrowserRouter>
   );
