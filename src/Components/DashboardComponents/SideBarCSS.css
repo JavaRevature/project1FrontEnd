@@ -1,0 +1,9 @@
+.SideBar{
+    border-right: 1px solid black;
+    width: 30vw;
+}
+
+.SideBarItems{
+    display: flex;
+    flex-direction: column;
+}

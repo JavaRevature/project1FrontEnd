@@ -12,16 +12,16 @@ export const LoginComponent: React.FC = () => {
     const navigate = useNavigate()
 
     const handleLogin = async () => {
-        const loginResponse = await axios.post(store.baseUrl + "login", {
+        await axios.post(store.baseUrl + "login", {
             username: username,
             password: password
         }
         ).then(
             (response) => {
-                store.authToken = response.data.jwtToken
-                store.user.username = response.data.username
-                store.user.role = response.data.role
-                alert(`Login Successfully! Welcome ${store.user.role} ${store.user.username}`)
+                localStorage.setItem('authToken', response.data.jwtToken)
+                localStorage.setItem('username', response.data.username)
+                localStorage.setItem('role', response.data.role)
+                alert(`Login Successfully! Welcome ${response.data.role} ${response.data.username}`)
                 navigate("/dashboard")
             }
         ).catch((error) => {

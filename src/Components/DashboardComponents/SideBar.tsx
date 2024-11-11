@@ -1,19 +1,31 @@
-import { store } from "../../GlobalData/store"
+import { useEffect, useState } from "react"
 import "./SideBarCSS.css"
+import { User } from "../../Types/User";
 export const SideBar: React.FC = () => {
-    return (
-        <div>
-            <div>
+
+    const [user, setUser] = useState<User>();
+
+    useEffect(() => {
+        if (localStorage.getItem('username') && localStorage.getItem('role')) {
+            setUser(
                 {
-                    store.user.role === "EMPLOYEE" ?
-                        <h3>Manage My Reimbursements</h3> :
-                        <h3>Manage All Reimbursements</h3>
+                    username: localStorage.getItem('username'),
+                    role: localStorage.getItem('role')
                 }
-            </div>
-            <div>
+            )
+        }
+    }, [])
+
+    console.log(user)
+    return (
+        <div className="SideBar">
+            <h3>ERS</h3>
+            <hr />
+            <div className="SideBarItems">
+                <h4>Reimbursements</h4>
                 {
-                    store.user.role === "MANAGER" ?
-                        <h3>Manage Users</h3> :
+                    user?.role === "MANAGER" ?
+                        <h4>Manage Users</h4> :
                         <></>
                 }
             </div>
