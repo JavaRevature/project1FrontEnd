@@ -25,12 +25,43 @@ export const UserComponents: React.FC = () => {
         }
         getUsers()
     }, [token])
-    const handlePromote = async () => {
+    const handlePromote = async (id: number) => {
+        await axios.patch(store.baseUrl + "users/" + id,
+            JSON.stringify("MANAGER")
+            ,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                alert("Successfully Promoted")
+                window.location.reload();
+            }).catch((error) => {
+                alert(error)
+            })
+    }
 
+    const handleDelete = async (id: number) => {
+        await axios.delete(store.baseUrl + "users/" + id,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        ).then(
+            () => {
+                alert("Successfully Deleted User")
+                window.location.reload();
+            })
+            .catch((error) => {
+                alert(error)
+            })
     }
 
     return (<div className="userComponents">
         <h3>User Management</h3>
+        <hr></hr>
         <Table>
             <thead>
                 <tr>
@@ -43,11 +74,11 @@ export const UserComponents: React.FC = () => {
             <tbody>
                 {users && users.length > 0 ? (
                     users.map((user: User) =>
-                        <tr key={user.username}>
+                        <tr key={user.id}>
                             <td>{user.username}</td>
                             <td>{user.role}</td>
-                            <td>{user.role === 'EMPLOYEE' && <Button variant="success" onClick={() => handlePromote()}>PROMOTE</Button>}</td>
-                            <td><Button variant="danger">DELETE</Button></td>
+                            <td>{user.role === 'EMPLOYEE' && <Button variant="success" onClick={() => handlePromote(user.id)}>PROMOTE</Button>}</td>
+                            <td><Button variant="danger" onClick={() => handleDelete(user.id)}>DELETE</Button></td>
                         </tr>
                     )
                 ) : (

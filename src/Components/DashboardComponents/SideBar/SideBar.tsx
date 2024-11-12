@@ -6,16 +6,7 @@ export const SideBar: React.FC = () => {
 
     const [user, setUser] = useState<User>();
     const navigate = useNavigate()
-    useEffect(() => {
-        if (localStorage.getItem('username') && localStorage.getItem('role')) {
-            setUser(
-                {
-                    username: localStorage.getItem('username'),
-                    role: localStorage.getItem('role')
-                }
-            )
-        }
-    }, [])
+    const role = localStorage.getItem('role')
 
     console.log(user)
     return (
@@ -25,7 +16,7 @@ export const SideBar: React.FC = () => {
             <div className="SideBarItems">
                 <h4 onClick={() => { navigate("/dashboard") }}>Reimbursements</h4>
                 {
-                    user?.role === "MANAGER" ?
+                    role === "MANAGER" ?
                         <h4 onClick={() => { navigate("/dashboard/users") }}>Manage Users</h4> :
                         <></>
                 }

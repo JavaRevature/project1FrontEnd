@@ -1,17 +1,15 @@
 import "./CardsContainer.css"
 import { Button, Table } from "react-bootstrap"
 import { useEffect, useState } from "react";
-import { User } from "../../../Types/User";
 import axios from "axios";
 import { store } from "../../../GlobalData/store";
 import { Reimbursement } from "../../../Types/Reimbursement";
 import { UpdateReimbursements } from "./UpdateReimbursements";
 export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPending }) => {
-    const [user, setUser] = useState<User>();
     const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
     const [currentReimbursement, setCurrentReimbursement] = useState<Reimbursement | null>();
     const token = localStorage.getItem('authToken');
-
+    const role = localStorage.getItem('role')
     const handleOpenModal = (reimbursement: Reimbursement) => {
         setCurrentReimbursement(reimbursement)
     }
@@ -21,21 +19,9 @@ export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPe
     }
 
     useEffect(() => {
-        if (localStorage.getItem('username') && localStorage.getItem('role')) {
-            setUser(
-                {
-                    username: localStorage.getItem('username'),
-                    role: localStorage.getItem('role')
-                }
-            )
-        }
-
-    }, [])
-
-    useEffect(() => {
         const getReimbursementsByUserRoleOrId = async () => {
             let requestParameter = "reimbursements"
-            if (user?.role === "MANAGER") {
+            if (role === "MANAGER") {
                 requestParameter += "/all"
             }
             if (isPending) {
@@ -54,7 +40,7 @@ export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPe
         }
         getReimbursementsByUserRoleOrId();
 
-    }, [isPending, token, user?.role])
+    }, [isPending, token, role])
 
 
     return (
@@ -66,7 +52,7 @@ export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPe
                         <th>Status</th>
                         <th>Cost</th>
                         <th>Description</th>
-                        {user?.role === "EMPLOYEE" ? <th>Resolved By</th> : <th>Update Status</th>}
+                        {role === "EMPLOYEE" ? <th>Resolved By</th> : <th>Update Status</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +63,7 @@ export const DashboardCardsContainer: React.FC<{ isPending: boolean }> = ({ isPe
                                 <td>{reimbursement.status}</td>
                                 <td>{reimbursement.amount}</td>
                                 <td>{reimbursement.description}</td>
-                                {user?.role === "EMPLOYEE" ? <td>{reimbursement.resolvedBy?.username}</td> : <td><Button onClick={() => handleOpenModal(reimbursement)}>Update</Button></td>}
+                                {role === "EMPLOYEE" ? <td>{reimbursement.resolvedBy?.username}</td> : <td><Button onClick={() => handleOpenModal(reimbursement)}>Update</Button></td>}
                             </tr>
                         ))
                     ) : (
